@@ -1,0 +1,23 @@
+append_aliases_to_bashrc() {
+cat <<'EOF' >> /etc/bash.bashrc
+###gorkiscript
+if [ -e /usr/share/gorkiscript/.gorkiscript_bash_aliases ]; then
+  source /usr/share/gorkiscript/.gorkiscript_bash_aliases
+fi
+###gorkicode
+EOF
+}
+
+remove_aliases_from_bashrc() {
+  sed -i '/###gorkiscript/,/###gorkicode/d' /etc/bash.bashrc
+}
+
+post_install() {
+  append_aliases_to_bashrc
+  echo 'Please restart the terminal :)'
+}
+
+post_remove() {
+  remove_aliases_from_bashrc
+  echo 'Thank you for this time! :) please stay tuned for new stuff on https://www.github.com/gorkicode'
+}

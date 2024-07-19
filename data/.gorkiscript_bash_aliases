@@ -1,0 +1,10 @@
+bra ()
+{
+  if [ ${@: -1} == 'logt' ]; then
+    xfce4-terminal --tab --title='BRAVE_LOG' -x bash -c 'tail -f /var/tmp/brave.log'
+    if (( $# == 1 )); then
+      shift
+    fi
+  fi
+  out=$( brave "$1" 2>&1 | tee /var/tmp/brave.log )&
+}

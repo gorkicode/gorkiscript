@@ -1,0 +1,13 @@
+{
+    "header": "# Changelog\n\n",
+    "types": [
+        {"type": "feat", "section": "Features", "hidden": true},
+        {"type": "fix", "section": "Bug Fixes", "hidden": true},
+        {"type": "chore", "hidden": true},
+        {"type": "docs", "hidden": false},
+        {"type": "style", "hidden": true},
+        {"type": "refactor", "hidden": false},
+        {"type": "perf", "hidden": true},
+        {"type": "test", "hidden": true}
+    ]
+}

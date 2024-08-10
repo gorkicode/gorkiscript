@@ -1,7 +1,7 @@
 # Maintainer: gorkicode <gorkicode@gmail.com>
 
 pkgname=gorkiscript
-pkgver=0.1.2
+pkgver=0.1.3
 pkgrel=1
 pkgdesc="gorkiscript is a set of scripts and configurations for Manjaro (https://manjaro.org/) with XFCE4 (https://manjaro.org/products/download/x86)"
 arch=('any')

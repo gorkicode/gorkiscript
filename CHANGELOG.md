@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [0.2.1](https://github.com/gorkicode/gorkiscript/compare/v0.2.0...v0.2.1) (2024-08-10)
+
+
+* **readme:** add description and usage of new features ([dc878ef](https://github.com/gorkicode/gorkiscript/commit/dc878ef68f8fe72cf0d388f9fe57d5df1d32c2a6))
+
 ## [0.2.0](https://github.com/gorkicode/gorkiscript/compare/v0.1.3...v0.2.0) (2024-08-10)
 
 

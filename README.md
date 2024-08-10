@@ -7,7 +7,7 @@ gorkiscript - My set of scripts and configurations for Manjaro (Arch Linux) bran
 </p>
 
 <p align="center">
-<img src="https://img.shields.io/badge/version-0.1.3-orange">
+<img src="https://img.shields.io/badge/version-0.2.0-orange">
 </p>
 
 ## About gorkiscript

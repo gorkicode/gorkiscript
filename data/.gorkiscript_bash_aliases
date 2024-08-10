@@ -1,10 +1,269 @@
-bra ()
-{
-  if [ ${@: -1} == 'logt' ]; then
-    xfce4-terminal --tab --title='BRAVE_LOG' -x bash -c 'tail -f /var/tmp/brave.log'
-    if (( $# == 1 )); then
+#!/bin/bash
+#
+# Holds a set of "gorkiscript" bash aliases functions to be sourced by
+# /etc/bash.bashrc
+#
+# This code DOES NOT utilizes local (shell builtin command) variables definite 
+# into a parent function inside a child, without re-declaring it there (in 
+# child), this for the sake of readness of functions parameters and evit search
+# back for variables definitions/assignations in others parts of code too.
+
+# Regex patterns for use with __get_arr_elm function.
+ALIASCONF_REGEX='(.+);{3}(.+);{3}(.+)'
+
+# Number of alias-configuration properties.
+ALIASCONF_PROPERTIESCOUNT=3
+
+# This is the alias-configuration format:
+# <gA-aliasname-description>;;;<onelinercommand-logt>;;;<onelinercommand-invoke>
+#
+# List of alias-configurations in ANSI-C Quoting.
+declare -a ALIASCONF_LIST=(
+$'brave-Call brave browser thru setsid. Logt flag for terminal tab with log.
+;;;
+xfce4-terminal --tab --title=\'BRAVE_LOG\' --execute bash -c 
+\'tail -f /var/tmp/gA_brave.log\'
+;;;
+setsid brave "$1" 2>&1 | tee /var/tmp/gA_brave.log >/dev/null &'
+$'browser-Call default browser thru setsid. Logt flag for terminal tab with log.
+;;;
+xfce4-terminal --tab --title=\'BROWSER_LOG\' --execute bash -c 
+\'tail -f /var/tmp/gA_browser.log\'
+;;;
+setsid $BROWSER "$1" 2>&1 | tee /var/tmp/gA_browser.log >/dev/null &'
+$'ddg-Browser with duckduckgo thru setsid. Logt flag for terminal tab with log.
+;;;
+xfce4-terminal --tab --title=\'DDG_LOG\' --execute bash -c 
+\'tail -f /var/tmp/gA_ddg.log\'
+;;;
+setsid $BROWSER "https://www.duckduckgo.com/$1" 2>&1 | 
+tee /var/tmp/gA_ddg.log >/dev/null &'
+$'list-List of gA alias to stdout.
+;;;
+echo " "
+;;;
+echo __list'
+)
+
+#######################################
+# DEPRECATED
+# Brave alias.
+# Globals:
+#   None
+# Arguments:
+#   None
+#######################################
+# bra ()
+# {
+#   if [ "${@: -1}" == 'logt' ]; then
+#     xfce4-terminal --tab --title='BRAVE_LOG' --execute \
+#       bash -c 'tail -f /var/tmp/brave.log'
+#
+#     if (( $# == 1 )); then
+#       shift
+#     fi
+#   fi
+#   out=$( brave "$1" 2>&1 | tee /var/tmp/brave.log )&
+# }
+
+#######################################
+# Get the specified regex-match result.
+# Globals:
+#   None
+# Arguments:
+#   Literal string with regex pattern.
+#   String to be matched against regex.
+#   Integer, matched element number to 
+#     be returned.
+# Returns:
+#   Matched string.
+#######################################
+__get_arr_elm () {
+  local regex=$1
+  local str=$2
+  local pos=$3
+
+  if [[ $str =~ $regex ]]; then
+    local ret=${BASH_REMATCH[$pos]}
+    echo ${ret}
+  fi
+}
+
+#######################################
+# Decode string.
+# Globals:
+#   None
+# Arguments:
+#   String to be decoded.
+# Returns:
+#   A string Base64 decoded.
+#######################################
+__decode_str () {
+  local dec=$(echo $1 | base64 --decode)
+  echo $dec
+}
+
+#######################################
+# Encode string.
+# Globals:
+#   None
+# Arguments:
+#   String to be encoded.
+# Returns:
+#   Base64 encoded string.
+#######################################
+__encode_str () {
+  echo -n "$1" | base64 --wrap 0
+}
+
+#######################################
+# Print alias-configuration properties.
+# Globals:
+#   ALIASCONF_LIST
+# Arguments:
+#   Encoded alias-configuration array.
+# Outputs:
+#   Print alias-configuration 
+#   properties to stdout.
+#######################################
+__print_aliasconf () {
+  local -a encaliasconf_arr=(${@})
+  printf "alias-configuration:\n"
+  local aliasconf_namedesc=$(__decode_str "${encaliasconf_arr[0]}")
+  printf " gA-threecharsalias:\n  %s\n"\
+  "${aliasconf_namedesc:0:3}"
+  printf " gA-aliasname-description:\n  %s\n"\
+  "$(__decode_str "${encaliasconf_arr[0]}")"
+  printf " onelinercommand-logt:\n  %s\n"\
+  "$(__decode_str "${encaliasconf_arr[1]}")"
+  printf " onelinercommand-invoke:\n  %s\n\n"\
+  "$(__decode_str "${encaliasconf_arr[2]}")"
+}
+
+#######################################
+# Invoke gA alias.
+# Globals:
+#   ALIASCONF_PROPERTIESCOUNT
+# Arguments:
+#   Encoded alias-configuration array.
+#   Three characters string, the gA-threecharsalias.
+#   OPTIONAL command argument.
+#   OPTIONAL gA flag.
+#######################################
+__invoke () {
+  # terminal invocation format:
+  # gA <gA-threecharsalias> [cmdargs] [flag]
+
+  local -a encaliasconf_arr=(${@: 1:$ALIASCONF_PROPERTIESCOUNT})
+
+  # shift the encaliasconf_arr parameter
+  shift $ALIASCONF_PROPERTIESCOUNT
+  
+  # shift the "three-character name alias" fetched from the terminal
+  shift
+
+  local flag=""
+
+  # at this point ${@} has [cmdargs] and/or [flag]
+
+  # if last positional argument flag is given
+  if [ "${@: -1}" == 'logt' ]; then
+    local flag=${@: -1}
+
+    if [ "${flag}" == "${@: 1:1}" ] && [ $# == 1 ]; then
+      # there is no cmdargs, only flag
+      # if the onelinercommand-invoke uses command line arguments i.e: $1
+      # the flag value will be taken into $1 and it is a misbeheaviour
+      # then shift that from positional arguments
       shift
     fi
   fi
-  out=$( brave "$1" 2>&1 | tee /var/tmp/brave.log )&
+
+  if ! [ -z "$flag" ]; then
+    local aliasconf_logt=$(__decode_str "${encaliasconf_arr[1]}")
+    $(eval ${aliasconf_logt})
+  fi
+
+  local aliasconf_invoke=$(__decode_str "${encaliasconf_arr[2]}")
+  $(eval ${aliasconf_invoke})
+}
+
+#######################################
+# Get an encoded alias-configuration array.
+# Globals:
+#   ALIASCONF_REGEX
+# Arguments:
+#   String to be expanded, 
+#     alias-configuration
+# Returns:
+#   Encoded alias-configuration array.
+#######################################
+__get_encaliasconf_arr () {
+  local str=$1
+  local -a ret_arr=()
+
+  local aliasconf_1=$(__get_arr_elm "$ALIASCONF_REGEX" "$str" 1)
+  ret_arr=$(__encode_str "$aliasconf_1")
+  ret_arr+=" "
+
+  local aliasconf_2=$(__get_arr_elm "$ALIASCONF_REGEX" "$str" 2)
+  ret_arr+=$(__encode_str "$aliasconf_2")
+  ret_arr+=" "
+
+  local aliasconf_3=$(__get_arr_elm "$ALIASCONF_REGEX" "$str" 3)
+  ret_arr+=$(__encode_str "$aliasconf_3")
+
+  echo "${ret_arr[@]}"
+}
+
+#######################################
+# gA aliases listing.
+# Globals:
+#   ALIASCONF_LIST
+# Arguments:
+#   None
+# Outputs:
+#   List of gA alias to stdout.
+#######################################
+__list () {
+  # Loads alias-configuration list
+  for elm in "${ALIASCONF_LIST[@]}"; do
+    local aliasconf_str=$elm
+    local -a encaliasconf_arr=($(__get_encaliasconf_arr "$aliasconf_str"))
+    __print_aliasconf ${encaliasconf_arr[@]}
+  done
+}
+
+#######################################
+# gA aliases loader.
+# Globals:
+#   ALIASCONF_LIST
+# Arguments:
+#   Three characters string, the gA-threecharsalias.
+#   OPTIONAL command argument.
+#   OPTIONAL gA flag.
+#######################################
+gA () {
+  if (( ${#} > 0 )); then
+    # Loads alias-configuration list
+    for elm in "${ALIASCONF_LIST[@]}"; do
+      local aliasconf_str=$elm
+      local -a encaliasconf_arr=($(__get_encaliasconf_arr "$aliasconf_str"))
+
+      local aliasconf_found=false
+
+      local aliasconf_namedesc=$(__decode_str "${encaliasconf_arr[0]}")
+
+      # Compare the first three chars from cmdconf_commandname
+      if [ "$1" == "${aliasconf_namedesc:0:3}" ]; then
+        __invoke ${encaliasconf_arr[@]} "${@}"
+        local aliasconf_found=true
+        break
+      fi
+    done
+    if ! $aliasconf_found; then
+      # no aliasconf found! default setsid call...
+      setsid "${@}"
+    fi
+  fi
 }

@@ -1,6 +1,13 @@
 # Changelog
 
 
+## [0.2.0](https://github.com/gorkicode/gorkiscript/compare/v0.1.3...v0.2.0) (2024-08-10)
+
+
+### Features
+
+* **gorkiscript-aliases:** move from proof of concept to something more like a "code" ([1e2dd81](https://github.com/gorkicode/gorkiscript/commit/1e2dd81596aaa3b5b37ddbc5d0a1535690a4fc6a))
+
 ## [0.1.3](https://github.com/gorkicode/gorkiscript/compare/v0.1.2...v0.1.3) (2024-08-10)
 
 ## [0.1.2](https://github.com/gorkicode/gorkiscript/compare/v0.1.1...v0.1.2) (2024-08-08)

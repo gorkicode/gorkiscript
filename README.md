@@ -7,7 +7,7 @@ gorkiscript - Set of scripts and configurations for Manjaro (Arch Linux) brand n
 </p>
 
 <p align="center">
-<img src="https://img.shields.io/badge/version-0.2.1-orange">
+<img src="https://img.shields.io/badge/version-0.3.0-orange">
 </p>
 
 ## About gorkiscript
@@ -32,10 +32,19 @@ gorkiscript - Set of scripts and configurations for Manjaro (Arch Linux) brand n
 
     (Loaded from /usr/share/gorkiscript/.gorkiscript_bash_aliases in /etc/bash.bashrc)
 
+    * SHOW LIST OF gA ALIAS:
+        * SYNOPSIS: `gA lis`
+        * DESCRIPTION: list-List of gA alias to stdout.
+
     * BYPASS ALIAS TO setsid COMMAND:
         * SYNOPSIS: `gA COMMAND [COMMAND ARGUMENTS]`
         * DESCRIPTION: Call any executable THAT IS NOT three characters string alias 
           (a.k.a. gA-threecharsalias) thru setsid.
+
+    * OPEN THRU setsid A NEW TERMINAL:
+        * SYNOPSIS: `gA ter [COMMAND COMMAND ARGUMENTS]`
+        * DESCRIPTION: Call any executable THAT IS NOT three characters string alias 
+          (a.k.a. gA-threecharsalias) thru setsid in a new xfce4-terminal tab.
 
     * BRAVE BROWSER:
         * SYNOPSIS: `gA bra [URL] [logt]`
@@ -48,10 +57,6 @@ gorkiscript - Set of scripts and configurations for Manjaro (Arch Linux) brand n
     * SEARCH IN DUCKDUCKGO:
         * SYNOPSIS: `gA ddg [QUERY] [logt]`
         * DESCRIPTION: ddg-Browser with duckduckgo thru setsid. Logt flag for terminal tab with log.
-
-    * SHOW LIST OF gA ALIAS:
-        * SYNOPSIS: `gA lis`
-        * DESCRIPTION: list-List of gA alias to stdout.
 ---
 
 ## Donations

@@ -43,6 +43,11 @@ $'list-List of gA alias to stdout.
 echo " "
 ;;;
 echo __list'
+$'terminal-Run command in a new xfce4-terminal tab.
+;;;
+echo " "
+;;;
+setsid xfce4-terminal --tab --execute bash -c "$1 ; bash"'
 )
 
 #######################################
